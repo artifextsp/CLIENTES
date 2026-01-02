@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUDENS - Plataforma de Gestión Académica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Variables de diseño y reset */
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2d5aa0;
+            --accent-color: #4a90e2;
+            --light-color: #f8f9fa;
+            --dark-color: #333;
+            --gray-color: #6c757d;
+            --light-gray: #e9ecef;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --border-radius: 12px;
+            --max-width: 1400px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: var(--dark-color);
+            background-color: #fff;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        section {
+            padding: 4rem 0;
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            z-index: 1000;
+            padding: 1.2rem 0;
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+        }
+
+        .logo i {
+            margin-right: 0.8rem;
+            color: var(--accent-color);
+            font-size: 2.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 2.5rem;
+        }
+
+        .nav-links a {
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--accent-color);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* Video Section */
+        .video-section {
+            padding-top: 10rem;
+            padding-bottom: 3rem;
+            background-color: #fff;
+            position: relative;
+        }
+
+        .video-section::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 5%;
+            width: 90%;
+            height: 1px;
+            background-color: rgba(0, 0, 0, 0.08);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .video-container video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: var(--border-radius);
+        }
+
+        .video-controls {
+            position: absolute;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 10;
+        }
+
+        .mute-btn {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .mute-btn:hover {
+            background-color: white;
+            transform: scale(1.1);
+        }
+
+        /* Features Section */
+        .features-section {
+            background-color: #fff;
+            padding-top: 2rem;
+        }
+
+        .features-container {
+            display: flex;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 4rem;
+        }
+
+        .features-nav {
+            flex: 0 0 350px;
+            position: sticky;
+            top: 10rem;
+            height: fit-content;
+            background-color: #fff;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .features-nav h3 {
+            font-size: 1.8rem;
+            margin-bottom: 2.5rem;
+            color: var(--primary-color);
+            text-align: left;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-item {
+            padding: 1.5rem 1.8rem;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            opacity: 0;
+            transition: var(--transition);
+            color: var(--accent-color);
+        }
+
+        .nav-item:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(74, 144, 226, 0.05);
+            transform: translateX(5px);
+        }
+
+        .nav-item.active {
+            border-color: var(--accent-color);
+            background-color: rgba(74, 144, 226, 0.1);
+            color: var(--accent-color);
+            transform: translateX(10px);
+        }
+
+        .nav-item.active i {
+            opacity: 1;
+        }
+
+        .features-content {
+            flex: 1;
+        }
+
+        .feature-content {
+            display: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 4rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-content.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-content h2 {
+            font-size: 2.8rem;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: 1rem;
+        }
+
+        .feature-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 5px;
+            background-color: var(--accent-color);
+            border-radius: 2.5px;
+        }
+
+        .feature-content .feature-image {
+            width: 100%;
+            margin: 3rem 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .feature-content .feature-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-content .feature-image img:hover {
+            transform: scale(1.03);
+        }
+
+        .feature-content .feature-text {
+            font-size: 1.25rem;
+            line-height: 1.9;
+            color: var(--dark-color);
+        }
+
+        .feature-content .feature-text p {
+            margin-bottom: 2rem;
+        }
+
+        .feature-content .feature-text strong {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        /* Result Subtitle */
+        .result-subtitle {
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 2rem 0 1rem 0;
+            padding-left: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Contact Footer */
+        .contact-footer {
+            background-color: #fff;
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .contact-name {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: 0.5px;
+        }
+
+        .contact-phone {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            background-color: #f0f7ff;
+            padding: 0.8rem 2rem;
+            border-radius: var(--border-radius);
+            display: inline-block;
+            transition: var(--transition);
+        }
+
+        .contact-phone:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0d1b36;
+            color: white;
+            padding: 2.5rem 0 2rem;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .footer-logo i {
+            color: var(--accent-color);
+            margin-right: 0.8rem;
+        }
+
+        .footer-text {
+            max-width: 700px;
+            margin-bottom: 2rem;
+            opacity: 0.8;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .copyright {
+            width: 100%;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 1rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .features-container {
+                gap: 3rem;
+            }
+            
+            .features-nav {
+                flex: 0 0 300px;
+            }
+            
+            .feature-content {
+                padding: 3.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .features-container {
+                flex-direction: column;
+                gap: 3rem;
+            }
+            
+            .features-nav {
+                position: static;
+                flex: none;
+                width: 100%;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+            
+            .nav-items {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .nav-item {
+                flex: 1;
+                min-width: 200px;
+                text-align: center;
+                justify-content: center;
+            }
+            
+            .nav-item i {
+                display: none;
+            }
+            
+            .nav-item:hover, .nav-item.active {
+                transform: translateY(-5px);
+            }
+            
+            .feature-content {
+                padding: 3rem;
+            }
+            
+            .feature-content h2 {
+                font-size: 2.5rem;
+            }
+            
+            .result-subtitle {
+                font-size: 1.4rem;
+            }
+            
+            .contact-name {
+                font-size: 1.9rem;
+            }
+            
+            .contact-phone {
+                font-size: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            section {
+                padding: 3rem 0;
+            }
+            
+            .container {
+                padding: 0 1.5rem;
+            }
+            
+            .video-section {
+                padding-top: 8rem;
+                padding-bottom: 2rem;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem 0;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                transition: var(--transition);
+                z-index: 999;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            
+            .nav-links li {
+                margin: 1rem 0;
+            }
+            
+            .feature-content {
+                padding: 2.5rem;
+            }
+            
+            .feature-content h2 {
+                font-size: 2.2rem;
+            }
+            
+            .result-subtitle {
+                font-size: 1.3rem;
+            }
+            
+            .logo {
+                font-size: 1.8rem;
+            }
+            
+            .logo i {
+                font-size: 2rem;
+            }
+            
+            .contact-name {
+                font-size: 1.7rem;
+            }
+            
+            .contact-phone {
+                font-size: 1.3rem;
+                padding: 0.7rem 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .container {
+                padding: 0 1.2rem;
+            }
+            
+            .video-controls {
+                bottom: 1rem;
+                right: 1rem;
+            }
+            
+            .mute-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+            }
+            
+            .features-nav {
+                padding: 2rem 1.5rem;
+            }
+            
+            .features-nav h3 {
+                font-size: 1.5rem;
+            }
+            
+            .nav-items {
+                flex-direction: column;
+            }
+            
+            .nav-item {
+                min-width: 100%;
+            }
+            
+            .feature-content {
+                padding: 2rem;
+            }
+            
+            .feature-content h2 {
+                font-size: 1.9rem;
+            }
+            
+            .result-subtitle {
+                font-size: 1.2rem;
+                margin: 1.5rem 0 0.8rem 0;
+            }
+            
+            .feature-content .feature-text {
+                font-size: 1.1rem;
+            }
+            
+            .footer-logo {
+                font-size: 2rem;
+            }
+            
+            .contact-name {
+                font-size: 1.5rem;
+            }
+            
+            .contact-phone {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-graduation-cap"></i> LUDENS
+            </a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#video">Inicio</a></li>
+                <li><a href="#features">Características</a></li>
+                <li><a href="#contact">Contacto</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Video Section -->
+    <section class="video-section" id="video">
+        <div class="container">
+            <div class="video-container">
+                <video id="introVideo" autoplay playsinline loop muted>
+                    <source src="https://res.cloudinary.com/dndqz36tv/video/upload/v1767386242/LUDENS_C1_zeq9tu.mp4" type="video/mp4">
+                    Tu navegador no soporta videos HTML5.
+                </video>
+                <div class="video-controls">
+                    <button class="mute-btn" id="muteBtn">
+                        <i class="fas fa-volume-mute"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="features-container">
+                <div class="features-nav">
+                    <h3>CARACTERÍSTICAS DE LUDENS</h3>
+                    <div class="nav-items">
+                        <div class="nav-item active" data-feature="feature1">
+                            <span>Centrada en el Estudiante</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="nav-item" data-feature="feature2">
+                            <span>Diseñada para la Academia</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                        <div class="nav-item" data-feature="feature3">
+                            <span>Facilidad Técnica</span>
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="features-content">
+                    <!-- Feature 1 -->
+                    <div class="feature-content active" id="feature1">
+                        <h2>Centrada en el Estudiante</h2>
+                        <p class="feature-text">
+                            La mayoría de plataformas muestra datos. LUDENS conecta equipos. Tu estudiante no es 'un caso' por partes. Es una historia completa. Con LUDENS todos los profesionales del colegio ven la misma información completa y en tiempo real para actuar juntos, a tiempo, y potenciar lo mejor de cada estudiante.
+                        </p>
+                        <div class="feature-image">
+                            <img src="https://res.cloudinary.com/dndqz36tv/image/upload/v1767394076/NC1_n3lraq.png" alt="Plataforma centrada en el estudiante">
+                        </div>
+                        <h3 class="result-subtitle">El resultado:</h3>
+                        <p class="feature-text">
+                            En LUDENS, cada estudiante es el centro de la experiencia. Nuestra plataforma integra toda la información académica, comportamental y de desarrollo en un solo lugar, permitiendo a docentes, coordinadores y directivos tener una visión holística del progreso de cada alumno.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 2 -->
+                    <div class="feature-content" id="feature2">
+                        <h2>Diseñada para la Academia</h2>
+                        <p class="feature-text">
+                            No es una plataforma 'bonita': es una herramienta pensada desde el aula. Mientras muchas soluciones nacen desde la ingeniería o el negocio, LUDENS nace desde la experiencia docente y su necesidad real: eliminar los reproceso administrativos y ser más eficientes en el aprovechamiento del tiempo.
+                        </p>
+                        <div class="feature-image">
+                            <img src="https://res.cloudinary.com/dndqz36tv/image/upload/v1767394076/NC2_wgdpgy.png" alt="Plataforma diseñada para la academia">
+                        </div>
+                        <p class="feature-text">
+                            En lugar de procesos dispersos en carpetas, chats, hojas sueltas, y aplicaciones para cada necesidad, LUDENS integra en un solo módulo la asignación, revisión, redacción de recomendaciones, asignación de calificación y notificación a padres, coordinación y equipos de apoyo, dejando todo centralizado, trazable y con evidencia.
+                        </p>
+                        <h3 class="result-subtitle">El resultado:</h3>
+                        <p class="feature-text">
+                            Menos tiempo repitiendo tareas, menos tiempo en tareas de administración de la información, más tiempo enseñando, acompañando y potenciando a cada estudiante.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 3 -->
+                    <div class="feature-content" id="feature3">
+                        <h2>Facilidad Técnica</h2>
+                        <p class="feature-text">
+                            LUDENS está diseñada para entrar a funcionar rápido, en cualquier tecnología que ya tenga la institución, sin inversiones extra ni complicaciones.
+                        </p>
+                        <div class="feature-image">
+                            <img src="https://res.cloudinary.com/dndqz36tv/image/upload/v1767386152/CARACTERISTICA3_xeytk6.png" alt="Plataforma con facilidad técnica">
+                        </div>
+                        <p class="feature-text">
+                            <strong>Compatibilidad total (cero fricción tecnológica):</strong> 100% compatible con Android, iOS, Windows, Linux y macOS. Funciona en celulares y tablets, y también en portátiles y equipos de escritorio. Esto significa: cada usuario usa el dispositivo que ya tiene, sin requerir equipos especiales.
+                        </p>
+                        <p class="feature-text">
+                            <strong>Puesta en marcha en tiempo récord:</strong> Implementación completa máximo 8 horas. La institución pasa de 'decidir' a 'operar' en el mismo día, reduciendo tiempos muertos y acelerando resultados.
+                        </p>
+                        <p class="feature-text">
+                            Como valor agregado, LUDENS viene con una app tipo PWA que permite instalarse en los dispositivos móviles, celulares o equipos de cómputo, proporcionando acceso rápido y personalizado para cada usuario de la institución.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Footer -->
+    <section class="contact-footer" id="contact">
+        <div class="container">
+            <div class="contact-info">
+                <div class="contact-name">HANSEL PEÑA DIAZ</div>
+                <div class="contact-phone">3143090748</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container footer-container">
+            <div class="footer-logo">
+                <i class="fas fa-graduation-cap"></i> LUDENS
+            </div>
+            <p class="footer-text">Plataforma de gestión académica diseñada para conectar equipos, eliminar procesos repetitivos y potenciar lo mejor de cada estudiante.</p>
+            <div class="copyright">
+                &copy; 2026 LUDENS. Todos los derechos reservados.
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Elementos del DOM
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        const navItems = document.querySelectorAll('.nav-item');
+        const featureContents = document.querySelectorAll('.feature-content');
+        const introVideo = document.getElementById('introVideo');
+        const muteBtn = document.getElementById('muteBtn');
+        const muteIcon = muteBtn.querySelector('i');
+        
+        // Control de audio del video
+        let isMuted = true;
+        
+        muteBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            introVideo.muted = isMuted;
+            
+            if (isMuted) {
+                muteIcon.className = 'fas fa-volume-mute';
+                muteBtn.setAttribute('aria-label', 'Activar sonido');
+            } else {
+                muteIcon.className = 'fas fa-volume-up';
+                muteBtn.setAttribute('aria-label', 'Silenciar sonido');
+            }
+        });
+        
+        // Función para cambiar entre características
+        function switchFeature(featureId) {
+            // Remover clase active de todos los elementos de navegación y contenidos
+            navItems.forEach(item => item.classList.remove('active'));
+            featureContents.forEach(content => content.classList.remove('active'));
+            
+            // Activar la característica seleccionada
+            document.querySelector(`.nav-item[data-feature="${featureId}"]`).classList.add('active');
+            document.getElementById(featureId).classList.add('active');
+        }
+        
+        // Event listeners para los elementos de navegación
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const featureId = item.getAttribute('data-feature');
+                switchFeature(featureId);
+                
+                // En dispositivos móviles, hacer scroll suave al contenido
+                if (window.innerWidth <= 992) {
+                    document.getElementById(featureId).scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Event listener para el menú móvil
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Cerrar menú móvil al hacer clic en un enlace
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        
+        // Asegurar que el video se reproduzca correctamente
+        document.addEventListener('DOMContentLoaded', () => {
+            // Forzar la reproducción del video en dispositivos móviles
+            if (introVideo) {
+                introVideo.play().catch(error => {
+                    console.log("Autoplay prevented:", error);
+                });
+            }
+        });
+        
+        // Smooth scrolling para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 90,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Cambiar el header al hacer scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.boxShadow = '0 5px 25px rgba(0, 0, 0, 0.12)';
+                header.style.padding = '0.8rem 0';
+            } else {
+                header.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.08)';
+                header.style.padding = '1.2rem 0';
+            }
+            
+            // Activar la característica visible en scroll (solo en desktop)
+            if (window.innerWidth > 992) {
+                let currentFeature = '';
+                const scrollPosition = window.scrollY + 200;
+                
+                featureContents.forEach(content => {
+                    const contentTop = content.offsetTop;
+                    const contentHeight = content.offsetHeight;
+                    
+                    if (scrollPosition >= contentTop && scrollPosition < contentTop + contentHeight) {
+                        currentFeature = content.id;
+                    }
+                });
+                
+                if (currentFeature) {
+                    navItems.forEach(item => item.classList.remove('active'));
+                    document.querySelector(`.nav-item[data-feature="${currentFeature}"]`).classList.add('active');
+                }
+            }
+        });
+        
+        // Inicializar la primera característica como activa
+        switchFeature('feature1');
+    </script>
+</body>
+</html>
