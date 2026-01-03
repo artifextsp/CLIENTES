@@ -167,6 +167,7 @@
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow);
+            background-color: #000; /* Fondo negro para evitar parpadeos */
         }
 
         .video-container video {
@@ -174,6 +175,7 @@
             height: auto;
             display: block;
             border-radius: var(--border-radius);
+            background-color: #000;
         }
 
         .video-controls {
@@ -202,6 +204,43 @@
         .mute-btn:hover {
             background-color: white;
             transform: scale(1.1);
+        }
+
+        /* Loading overlay */
+        .video-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 5;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .video-loading.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--accent-color);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
 
         /* Features Section */
@@ -686,7 +725,13 @@
     <section class="video-section" id="video">
         <div class="container">
             <div class="video-container">
-                <video id="introVideo" autoplay playsinline loop muted>
+                <!-- Loading overlay -->
+                <div class="video-loading" id="videoLoading">
+                    <div class="spinner"></div>
+                    <p>Cargando video...</p>
+                </div>
+                
+                <video id="introVideo" playsinline loop muted preload="auto">
                     <source src="https://res.cloudinary.com/dndqz36tv/video/upload/v1767386242/LUDENS_C1_zeq9tu.mp4" type="video/mp4">
                     Tu navegador no soporta videos HTML5.
                 </video>
@@ -726,7 +771,7 @@
                     <div class="feature-content active" id="feature1">
                         <h2>Centrada en el Estudiante</h2>
                         <p class="feature-text">
-                            Las plataformas de gestión académica muestran datos. LUDENS conecta equipos. Tu estudiante no es "un caso" por partes. Es una historia completa. Con LUDENS todos los profesionales del colegio ven la misma información completa y en tiempo real para actuar juntos, a tiempo, y potenciar lo mejor de cada estudiante.
+                            La mayoría de plataformas muestra datos. LUDENS conecta equipos. Tu estudiante no es 'un caso' por partes. Es una historia completa. Con LUDENS todos los profesionales del colegio ven la misma información completa y en tiempo real para actuar juntos, a tiempo, y potenciar lo mejor de cada estudiante.
                         </p>
                         <div class="feature-image">
                             <img src="https://res.cloudinary.com/dndqz36tv/image/upload/v1767394076/NC1_n3lraq.png" alt="Plataforma centrada en el estudiante">
@@ -797,7 +842,7 @@
             </div>
             <p class="footer-text">Plataforma de gestión académica diseñada para conectar equipos, eliminar procesos repetitivos y potenciar lo mejor de cada estudiante.</p>
             <div class="copyright">
-                &copy; 2026 LUDENS. Todos los derechos reservados.
+                &copy; 2023 LUDENS. Todos los derechos reservados.
             </div>
         </div>
     </footer>
@@ -811,10 +856,147 @@
         const introVideo = document.getElementById('introVideo');
         const muteBtn = document.getElementById('muteBtn');
         const muteIcon = muteBtn.querySelector('i');
+        const videoLoading = document.getElementById('videoLoading');
+        
+        // Variables para control de video
+        let isMuted = true;
+        let hasVideoStarted = false;
+        let retryCount = 0;
+        const maxRetries = 3;
+        
+        // MEJORA 1: Optimización de carga del video
+        function optimizeVideoLoading() {
+            // Precargar el video más agresivamente
+            introVideo.load();
+            
+            // Configurar el video para mejor fluidez
+            introVideo.preload = "auto";
+            introVideo.playsInline = true;
+            introVideo.setAttribute("webkit-playsinline", "");
+            introVideo.setAttribute("x5-playsinline", "");
+            introVideo.setAttribute("x5-video-player-type", "h5");
+            
+            // Forzar la descarga del video
+            introVideo.addEventListener('loadstart', function() {
+                console.log("Video comenzando a cargar...");
+            });
+            
+            // Mostrar loading mientras se carga
+            introVideo.addEventListener('waiting', function() {
+                if (!hasVideoStarted) {
+                    videoLoading.classList.remove('hidden');
+                }
+            });
+            
+            // Ocultar loading cuando el video puede reproducirse
+            introVideo.addEventListener('canplay', function() {
+                videoLoading.classList.add('hidden');
+                console.log("Video listo para reproducir");
+            });
+            
+            // Ocultar loading cuando el video está reproduciéndose
+            introVideo.addEventListener('playing', function() {
+                videoLoading.classList.add('hidden');
+                hasVideoStarted = true;
+                console.log("Video reproduciéndose");
+            });
+            
+            // Manejar errores de red/reproducción
+            introVideo.addEventListener('error', function(e) {
+                console.error("Error en video:", e);
+                videoLoading.classList.remove('hidden');
+                retryPlayback();
+            });
+            
+            // MEJORA 2: Buffer más agresivo
+            introVideo.addEventListener('progress', function() {
+                // Si tenemos suficiente buffer, intentar reproducir
+                if (introVideo.buffered.length > 0) {
+                    const bufferedEnd = introVideo.buffered.end(0);
+                    const currentTime = introVideo.currentTime;
+                    
+                    // Si tenemos al menos 3 segundos de buffer adelante
+                    if (bufferedEnd - currentTime > 3) {
+                        if (introVideo.paused && !hasVideoStarted) {
+                            startVideoPlayback();
+                        }
+                    }
+                }
+            });
+            
+            // MEJORA 3: Pre-carga más inteligente
+            if ('mediaSession' in navigator) {
+                navigator.mediaSession.metadata = new MediaMetadata({
+                    title: 'LUDENS - Plataforma de Gestión Académica',
+                    artist: 'LUDENS',
+                    artwork: [
+                        { src: 'https://res.cloudinary.com/dndqz36tv/image/upload/v1767394076/NC1_n3lraq.png', sizes: '96x96', type: 'image/png' }
+                    ]
+                });
+            }
+        }
+        
+        // Función para iniciar la reproducción del video
+        function startVideoPlayback() {
+            if (hasVideoStarted) return;
+            
+            const playPromise = introVideo.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(() => {
+                    // Reproducción exitosa
+                    hasVideoStarted = true;
+                    videoLoading.classList.add('hidden');
+                    console.log("Video reproducido automáticamente");
+                }).catch(error => {
+                    // Error en reproducción automática
+                    console.log("Autoplay prevenido:", error);
+                    
+                    if (retryCount < maxRetries) {
+                        retryCount++;
+                        setTimeout(() => {
+                            console.log(`Reintentando reproducción (${retryCount}/${maxRetries})...`);
+                            startVideoPlayback();
+                        }, 1000 * retryCount); // Espera progresiva
+                    } else {
+                        // Si falla después de varios intentos, mostrar instrucción
+                        videoLoading.innerHTML = `
+                            <div class="spinner"></div>
+                            <p>Presiona el botón de reproducción para iniciar el video</p>
+                            <button id="manualPlayBtn" style="margin-top: 1rem; padding: 0.5rem 1.5rem; background: var(--accent-color); color: white; border: none; border-radius: var(--border-radius); cursor: pointer;">
+                                <i class="fas fa-play"></i> Reproducir Video
+                            </button>
+                        `;
+                        
+                        document.getElementById('manualPlayBtn')?.addEventListener('click', function() {
+                            introVideo.muted = true;
+                            introVideo.play().then(() => {
+                                videoLoading.classList.add('hidden');
+                                hasVideoStarted = true;
+                            });
+                        });
+                    }
+                });
+            }
+        }
+        
+        // Función para reintentar reproducción
+        function retryPlayback() {
+            if (retryCount < maxRetries) {
+                retryCount++;
+                console.log(`Reintentando carga de video (${retryCount}/${maxRetries})...`);
+                
+                // Limpiar y recargar el video
+                introVideo.src = introVideo.src + '?' + new Date().getTime();
+                introVideo.load();
+                
+                setTimeout(() => {
+                    startVideoPlayback();
+                }, 1000 * retryCount);
+            }
+        }
         
         // Control de audio del video
-        let isMuted = true;
-        
         muteBtn.addEventListener('click', () => {
             isMuted = !isMuted;
             introVideo.muted = isMuted;
@@ -827,6 +1009,38 @@
                 muteBtn.setAttribute('aria-label', 'Silenciar sonido');
             }
         });
+        
+        // MEJORA 4: Intersection Observer para pausar/reanudar cuando el video está visible
+        const videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // El video está visible
+                    if (introVideo.paused && hasVideoStarted) {
+                        introVideo.play().catch(e => console.log("Error al reanudar:", e));
+                    }
+                } else {
+                    // El video no está visible
+                    if (!introVideo.paused) {
+                        introVideo.pause();
+                    }
+                }
+            });
+        }, {
+            threshold: 0.5 // 50% del video visible
+        });
+        
+        // Observar el contenedor del video
+        const videoContainer = document.querySelector('.video-container');
+        if (videoContainer) {
+            videoObserver.observe(videoContainer);
+        }
+        
+        // MEJORA 5: Prioridad de red para el video
+        if ('connection' in navigator && navigator.connection.saveData === true) {
+            console.log("Modo de ahorro de datos detectado, optimizando video...");
+            // En modo ahorro de datos, usar calidad más baja
+            // Podrías tener una versión de menor calidad del video
+        }
         
         // Función para cambiar entre características
         function switchFeature(featureId) {
@@ -873,12 +1087,25 @@
         
         // Asegurar que el video se reproduzca correctamente
         document.addEventListener('DOMContentLoaded', () => {
-            // Forzar la reproducción del video en dispositivos móviles
-            if (introVideo) {
-                introVideo.play().catch(error => {
-                    console.log("Autoplay prevented:", error);
-                });
-            }
+            // Optimizar la carga del video
+            optimizeVideoLoading();
+            
+            // Iniciar reproducción después de un pequeño delay
+            setTimeout(() => {
+                startVideoPlayback();
+            }, 500);
+            
+            // MEJORA 6: Pre-cargar imágenes de características
+            const featureImages = [
+                'https://res.cloudinary.com/dndqz36tv/image/upload/v1767394076/NC1_n3lraq.png',
+                'https://res.cloudinary.com/dndqz36tv/image/upload/v1767394076/NC2_wgdpgy.png',
+                'https://res.cloudinary.com/dndqz36tv/image/upload/v1767386152/CARACTERISTICA3_xeytk6.png'
+            ];
+            
+            featureImages.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
         });
         
         // Smooth scrolling para enlaces internos
@@ -928,6 +1155,21 @@
                     navItems.forEach(item => item.classList.remove('active'));
                     document.querySelector(`.nav-item[data-feature="${currentFeature}"]`).classList.add('active');
                 }
+            }
+        });
+        
+        // MEJORA 7: Detectar problemas de red y ajustar
+        window.addEventListener('online', () => {
+            console.log("Conexión restablecida, reintentando video...");
+            if (!hasVideoStarted && retryCount < maxRetries) {
+                retryPlayback();
+            }
+        });
+        
+        window.addEventListener('offline', () => {
+            console.log("Conexión perdida, pausando video...");
+            if (!introVideo.paused) {
+                introVideo.pause();
             }
         });
         
