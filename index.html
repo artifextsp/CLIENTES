@@ -323,13 +323,15 @@
             color: var(--primary-color);
             position: relative;
             padding-bottom: 1rem;
+            text-align: center;
         }
 
         .feature-content h2::after {
             content: '';
             position: absolute;
             bottom: 0;
-            left: 0;
+            left: 50%;
+            transform: translateX(-50%);
             width: 80px;
             height: 5px;
             background-color: var(--accent-color);
@@ -338,7 +340,7 @@
 
         .feature-video-container {
             width: 100%;
-            margin: 3rem 0;
+            margin: 0;
             border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
@@ -389,29 +391,44 @@
             transform: scale(1.1);
         }
 
-        .feature-content .feature-text {
-            font-size: 1.25rem;
-            line-height: 1.9;
-            color: var(--dark-color);
+        /* Video Poster */
+        .video-poster {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a365d 0%, #2d5aa0 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
         }
 
-        .feature-content .feature-text p {
-            margin-bottom: 2rem;
+        .video-poster.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
-        .feature-content .feature-text strong {
-            color: var(--secondary-color);
-            font-weight: 700;
+        .play-icon-large {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
-        /* Result Subtitle */
-        .result-subtitle {
-            color: var(--accent-color);
+        .video-title {
             font-size: 1.5rem;
             font-weight: 700;
-            margin: 2rem 0 1rem 0;
-            padding-left: 1rem;
-            border-left: 4px solid var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .video-duration {
+            font-size: 1rem;
+            opacity: 0.8;
         }
 
         /* Contact Footer */
@@ -495,46 +512,6 @@
             opacity: 0.7;
         }
 
-        /* Video Loading States */
-        .video-poster {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #1a365d 0%, #2d5aa0 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            transition: opacity 0.5s ease;
-        }
-
-        .video-poster.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .play-icon-large {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: white;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .video-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .video-duration {
-            font-size: 1rem;
-            opacity: 0.8;
-        }
-
         /* Responsive Design */
         @media (max-width: 1200px) {
             .features-container {
@@ -597,10 +574,6 @@
             
             .feature-content h2 {
                 font-size: 2.5rem;
-            }
-            
-            .result-subtitle {
-                font-size: 1.4rem;
             }
             
             .contact-name {
@@ -669,10 +642,6 @@
             
             .feature-content h2 {
                 font-size: 2.2rem;
-            }
-            
-            .result-subtitle {
-                font-size: 1.3rem;
             }
             
             .logo {
@@ -745,15 +714,6 @@
                 font-size: 1.9rem;
             }
             
-            .result-subtitle {
-                font-size: 1.2rem;
-                margin: 1.5rem 0 0.8rem 0;
-            }
-            
-            .feature-content .feature-text {
-                font-size: 1.1rem;
-            }
-            
             .footer-logo {
                 font-size: 2rem;
             }
@@ -798,16 +758,13 @@
     <section class="video-section" id="video">
         <div class="container">
             <div class="video-container">
-                <video id="introVideo" preload="metadata" loop>
+                <video id="introVideo" autoplay muted playsinline loop>
                     <source src="https://res.cloudinary.com/dndqz36tv/video/upload/v1767386242/LUDENS_C1_zeq9tu.mp4" type="video/mp4">
                     Tu navegador no soporta videos HTML5.
                 </video>
                 <div class="video-controls">
-                    <button class="control-btn" id="playPauseBtn">
-                        <i class="fas fa-play"></i>
-                    </button>
                     <button class="control-btn" id="muteBtn">
-                        <i class="fas fa-volume-up"></i>
+                        <i class="fas fa-volume-mute"></i>
                     </button>
                 </div>
             </div>
@@ -840,10 +797,6 @@
                     <!-- Feature 1 -->
                     <div class="feature-content active" id="feature1">
                         <h2>Centrada en el Estudiante</h2>
-                        <p class="feature-text">
-                            La mayoría de plataformas muestra datos. LUDENS conecta equipos. Tu estudiante no es 'un caso' por partes. Es una historia completa. Con LUDENS todos los profesionales del colegio ven la misma información completa y en tiempo real para actuar juntos, a tiempo, y potenciar lo mejor de cada estudiante.
-                        </p>
-                        
                         <div class="feature-video-container">
                             <div class="video-poster" id="poster1">
                                 <div class="play-icon-large">
@@ -852,7 +805,7 @@
                                 <div class="video-title">Centrada en el Estudiante</div>
                                 <div class="video-duration">Haz clic para reproducir</div>
                             </div>
-                            <video class="feature-video" id="video1" preload="metadata" loop>
+                            <video class="feature-video" id="video1" preload="metadata">
                                 <source src="https://res.cloudinary.com/dndqz36tv/video/upload/v1767416280/C1_ivoekd.mp4" type="video/mp4">
                                 Tu navegador no soporta videos HTML5.
                             </video>
@@ -865,20 +818,11 @@
                                 </button>
                             </div>
                         </div>
-                        
-                        <h3 class="result-subtitle">El resultado:</h3>
-                        <p class="feature-text">
-                            En LUDENS, cada estudiante es el centro de la experiencia. Nuestra plataforma integra toda la información académica, comportamental y de desarrollo en un solo lugar, permitiendo a docentes, coordinadores y directivos tener una visión holística del progreso de cada alumno.
-                        </p>
                     </div>
                     
                     <!-- Feature 2 -->
                     <div class="feature-content" id="feature2">
                         <h2>Diseñada para la Academia</h2>
-                        <p class="feature-text">
-                            No es una plataforma 'bonita': es una herramienta pensada desde el aula. Mientras muchas soluciones nacen desde la ingeniería o el negocio, LUDENS nace desde la experiencia docente y su necesidad real: eliminar los reproceso administrativos y ser más eficientes en el aprovechamiento del tiempo.
-                        </p>
-                        
                         <div class="feature-video-container">
                             <div class="video-poster" id="poster2">
                                 <div class="play-icon-large">
@@ -887,7 +831,7 @@
                                 <div class="video-title">Diseñada para la Academia</div>
                                 <div class="video-duration">Haz clic para reproducir</div>
                             </div>
-                            <video class="feature-video" id="video2" preload="metadata" loop>
+                            <video class="feature-video" id="video2" preload="metadata">
                                 <source src="https://res.cloudinary.com/dndqz36tv/video/upload/v1767416285/C2_l6xfwm.mp4" type="video/mp4">
                                 Tu navegador no soporta videos HTML5.
                             </video>
@@ -900,23 +844,11 @@
                                 </button>
                             </div>
                         </div>
-                        
-                        <p class="feature-text">
-                            En lugar de procesos dispersos en carpetas, chats, hojas sueltas, y aplicaciones para cada necesidad, LUDENS integra en un solo módulo la asignación, revisión, redacción de recomendaciones, asignación de calificación y notificación a padres, coordinación y equipos de apoyo, dejando todo centralizado, trazable y con evidencia.
-                        </p>
-                        <h3 class="result-subtitle">El resultado:</h3>
-                        <p class="feature-text">
-                            Menos tiempo repitiendo tareas, menos tiempo en tareas de administración de la información, más tiempo enseñando, acompañando y potenciando a cada estudiante.
-                        </p>
                     </div>
                     
                     <!-- Feature 3 -->
                     <div class="feature-content" id="feature3">
                         <h2>Facilidad Técnica</h2>
-                        <p class="feature-text">
-                            LUDENS está diseñada para entrar a funcionar rápido, en cualquier tecnología que ya tenga la institución, sin inversiones extra ni complicaciones.
-                        </p>
-                        
                         <div class="feature-video-container">
                             <div class="video-poster" id="poster3">
                                 <div class="play-icon-large">
@@ -925,7 +857,7 @@
                                 <div class="video-title">Facilidad Técnica</div>
                                 <div class="video-duration">Haz clic para reproducir</div>
                             </div>
-                            <video class="feature-video" id="video3" preload="metadata" loop>
+                            <video class="feature-video" id="video3" preload="metadata">
                                 <source src="https://res.cloudinary.com/dndqz36tv/video/upload/v1767416283/C3_leduyl.mp4" type="video/mp4">
                                 Tu navegador no soporta videos HTML5.
                             </video>
@@ -938,16 +870,6 @@
                                 </button>
                             </div>
                         </div>
-                        
-                        <p class="feature-text">
-                            <strong>Compatibilidad total (cero fricción tecnológica):</strong> 100% compatible con Android, iOS, Windows, Linux y macOS. Funciona en celulares y tablets, y también en portátiles y equipos de escritorio. Esto significa: cada usuario usa el dispositivo que ya tiene, sin requerir equipos especiales.
-                        </p>
-                        <p class="feature-text">
-                            <strong>Puesta en marcha en tiempo récord:</strong> Implementación completa máximo 8 horas. La institución pasa de 'decidir' a 'operar' en el mismo día, reduciendo tiempos muertos y acelerando resultados.
-                        </p>
-                        <p class="feature-text">
-                            Como valor agregado, LUDENS viene con una app tipo PWA que permite instalarse en los dispositivos móviles, celulares o equipos de cómputo, proporcionando acceso rápido y personalizado para cada usuario de la institución.
-                        </p>
                     </div>
                 </div>
             </div>
@@ -986,13 +908,10 @@
         
         // Control del video principal
         const introVideo = document.getElementById('introVideo');
-        const playPauseBtn = document.getElementById('playPauseBtn');
         const muteBtn = document.getElementById('muteBtn');
-        const playPauseIcon = playPauseBtn.querySelector('i');
         const muteIcon = muteBtn.querySelector('i');
         
         // Variables para control de video principal
-        let isMainVideoPlaying = false;
         let isMainVideoMuted = true; // Comenzar con audio desactivado
         
         // Inicializar videos de características
@@ -1025,33 +944,7 @@
         
         // ========== FUNCIONES DE CONTROL DE VIDEO ==========
         
-        // Función para controlar video principal
-        function toggleMainVideoPlayback() {
-            if (introVideo.paused) {
-                introVideo.play()
-                    .then(() => {
-                        isMainVideoPlaying = true;
-                        playPauseIcon.className = 'fas fa-pause';
-                    })
-                    .catch(error => {
-                        console.log("Error al reproducir video principal:", error);
-                        // Si falla por políticas de autoplay, forzar mute y reintentar
-                        introVideo.muted = true;
-                        introVideo.play()
-                            .then(() => {
-                                isMainVideoPlaying = true;
-                                isMainVideoMuted = true;
-                                playPauseIcon.className = 'fas fa-pause';
-                                muteIcon.className = 'fas fa-volume-mute';
-                            });
-                    });
-            } else {
-                introVideo.pause();
-                isMainVideoPlaying = false;
-                playPauseIcon.className = 'fas fa-play';
-            }
-        }
-        
+        // Control de audio del video principal
         function toggleMainVideoMute() {
             isMainVideoMuted = !isMainVideoMuted;
             introVideo.muted = isMainVideoMuted;
@@ -1097,11 +990,6 @@
                 videoObj.isPlaying = false;
                 const playIcon = playBtn.querySelector('i');
                 playIcon.className = 'fas fa-play';
-            });
-            
-            // Pre-cargar metadata para mejor experiencia
-            video.addEventListener('loadedmetadata', () => {
-                // Video listo, mantener poster visible hasta que el usuario lo active
             });
             
             // Manejar errores de carga
@@ -1189,19 +1077,7 @@
         // ========== EVENT LISTENERS PRINCIPALES ==========
         
         // Video principal
-        playPauseBtn.addEventListener('click', toggleMainVideoPlayback);
         muteBtn.addEventListener('click', toggleMainVideoMute);
-        
-        // Video principal: actualizar botón cuando cambia el estado
-        introVideo.addEventListener('play', () => {
-            isMainVideoPlaying = true;
-            playPauseIcon.className = 'fas fa-pause';
-        });
-        
-        introVideo.addEventListener('pause', () => {
-            isMainVideoPlaying = false;
-            playPauseIcon.className = 'fas fa-play';
-        });
         
         // Inicializar controles de videos de características
         featureVideos.forEach((videoObj, index) => {
@@ -1265,7 +1141,7 @@
         
         // Pre-cargar videos para mejor rendimiento
         document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar video principal con mute por defecto
+            // Inicializar video principal con autoplay y mute por defecto
             introVideo.muted = isMainVideoMuted;
             muteIcon.className = 'fas fa-volume-mute';
             
@@ -1284,7 +1160,7 @@
                         if (video && !video.paused) {
                             video.pause();
                             // Actualizar botón de play/pause
-                            const index = Array.from(featureVideos).findIndex(v => v.video === video);
+                            const index = featureVideos.findIndex(v => v.video === video);
                             if (index !== -1) {
                                 const playIcon = featureVideos[index].playBtn.querySelector('i');
                                 playIcon.className = 'fas fa-play';
